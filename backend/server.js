@@ -29,10 +29,10 @@ operationRoutes.route('/').get(function(req, res) {
     });
 });
 
-operationRoutes.route('/:id').get(function(req, res) {
-    let id = req.params.id;
-    Operation.findById(id, function(err, todo) {
-        res.json(todo);
+operationRoutes.route('/:operation_number').get(function(req, res) {
+    let operation_number = req.params.operation_number;
+    Operation.findByOperationNumber(operation_number, function(err, operation) {
+        res.json(operation);
     });
 });
 
