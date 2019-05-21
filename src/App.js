@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { Navbar } from 'react-bootstrap';
 import Operation from './components/operation.component';
+import Measuring from './components/measuring.component';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         </Navbar>
       </div>
       <Route path="/" exact component={Operation} />
+      <Route path="/:operation_number" component={Measuring} />
     </Router>
   );
 }

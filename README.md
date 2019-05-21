@@ -39,9 +39,9 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ## Backend
 
-The backend is an express.js server. It can be started using
+The backend is an express.js server. It can be started from the backend folder using
 
-`yarn start`
+`nodemon server`
 
 ## Learn More
 

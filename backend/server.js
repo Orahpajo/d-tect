@@ -31,7 +31,9 @@ operationRoutes.route('/').get(function(req, res) {
 
 operationRoutes.route('/:operation_number').get(function(req, res) {
     let operation_number = req.params.operation_number;
-    Operation.findByOperationNumber(operation_number, function(err, operation) {
+    Operation.findOne({ operation_number: operation_number}, function(err, operation) {
+        console.log('searching operation ' + operation_number);
+        console.log('found number '+ operation.operation_number)
         res.json(operation);
     });
 });

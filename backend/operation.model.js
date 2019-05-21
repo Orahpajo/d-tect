@@ -23,8 +23,4 @@ let Operation = new Schema({
     }]
 });
 
-Operation.methods.findByOperationNumber = function(operation_number) {
-    return this.model('Operation').find({ operation_number: this.operation_number}, operation_number);
-}
-
 module.exports = mongoose.model('Operation', Operation);
