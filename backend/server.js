@@ -8,7 +8,7 @@ const config = require('./config.json');
 app.use(cors());
 app.use(bodyParser.json());
 
-let Operation = require('./operation.model');2
+let Operation = require('./operation.model');
 
 const uri = config.mongoUri;
 mongoose.connect(uri, { useNewUrlParser: true });
