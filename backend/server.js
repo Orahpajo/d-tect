@@ -11,11 +11,16 @@ app.use(bodyParser.json());
 let Operation = require('./operation.model');
 
 const uri = config.mongoUri;
-mongoose.connect(uri, { useNewUrlParser: true });
+console.log('connectiong to uri '+uri)
+mongoose.connect(uri, { useNewUrlParser: true }, function(err ,db) {
+            if (err) {
+                console.log('error occured in mongoose.connect. Maybe Atlas blocked your IP. Error: '+ err);
+            } 
+        });
 const connection = mongoose.connection;
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
-})
+}).catch( error => console.log(error));
 
 const operationRoutes = express.Router();
 
@@ -32,9 +37,13 @@ operationRoutes.route('/').get(function(req, res) {
 operationRoutes.route('/:operation_number').get(function(req, res) {
     let operation_number = req.params.operation_number;
     Operation.findOne({ operation_number: operation_number}, function(err, operation) {
-        console.log('searching operation ' + operation_number);
-        console.log('found number '+ operation.operation_number)
-        res.json(operation);
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('searching operation ' + operation_number);
+            console.log('found number '+ operation.operation_number)
+            res.json(operation);
+        }
     });
 });
 
