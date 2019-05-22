@@ -31,7 +31,7 @@ export default class Operation extends Component {
                     <Form onSubmit={this.onSubmit}>
                         <Form.Group controlId="formBasicOperationID">
                             <Form.Label>Geben Sie die Messauftragsnummer ein</Form.Label>
-                            <Form.Control placeholder="Messauftragsnummer" />
+                            <Form.Control placeholder="Messauftragsnummer" onChange={this.onChangeOperationNumber}/>
                         </Form.Group>
                         <Button type="submit">
                             Los!
