@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 let Operation = new Schema({
     operation_number: String, //humban readable number of the operation
     measure_points: [{
-        location: {lat: Number,long: Number},
+        location: {lat: Number,lng: Number},
         measurings: [{ // different devices give different measure values. 
             device: String, // describes the device and activated sensor. Example: Gasdetectot pump with chloride sensor
             value: Number, // measured value at the center of the measure point. Example: 240 ppm
