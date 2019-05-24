@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
 import axios from 'axios';
 import MeasureMap from './measuremap.component';
-import {
-    toLatLon, toLatitudeLongitude, headingDistanceTo, moveTo, insidePolygon
-} from 'geolocation-utils'
+import {headingDistanceTo} from 'geolocation-utils'
 
 export default class Measuring extends Component {
     constructor(props) {
@@ -20,7 +18,6 @@ export default class Measuring extends Component {
 
 
     componentDidMount() {
-        //TODO we get the correct geolocation but the map is rendered with defaults, as well es the measuring calculation
         axios.get('http://localhost:4000/operations/' + this.props.match.params.operation_number)
             .then(response => {
                 this.setState({
@@ -33,6 +30,8 @@ export default class Measuring extends Component {
             .catch(function (error) {
                 console.log(error);
             });
+
+
         navigator.geolocation.getCurrentPosition((position) => { //watchPosition
             console.log('geolocation '+position.coords.latitude+','+position.coords.longitude)
             this.setState({
@@ -51,15 +50,15 @@ export default class Measuring extends Component {
         const location = measurePoint.location;
         console.log(this.state.location);
         const { distance } = headingDistanceTo(location, this.state.location);
-
-        const measureValue = measuring.value / (distance); //TODO min (distance,1)
+        console.log('disance '+distance);
+        const measureValue = measuring.value / Math.max(1,distance); 
         return measureValue + ' ' + unit;
     }
 
     render() {
         return (
             <Container>
-                <MeasureMap location={this.state.location}></MeasureMap>
+                <MeasureMap location={this.state.location} zoom={13}></MeasureMap>
                 <h2>Messung:  {this.state.measuredUnits}</h2>
             </Container>
         );

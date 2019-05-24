@@ -24,10 +24,8 @@ export default class MeasureMap extends Component {
 
 }
   render() {
-    const position = [this.state.location.lat, this.state.location.lng]
-    console.log('position map '+position);
+    const position = [this.props.location.lat, this.props.location.lng]
     return (
-
       <Map center={position} zoom={this.state.zoom} style={{ width: '100%', height: '600px' }}>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
