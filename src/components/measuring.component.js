@@ -8,13 +8,12 @@ export default class Measuring extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            location: { //London
-                lat: 51.505,
-                lng: -0.09,
-            }
+            location: {
+                lat: 51.960667,
+                lng: 7.628,
+            },
+            measureValues: []
         };
-
-        this.MeasuredUnits = this.MeasuredUnits.bind(this);
     }
 
 
@@ -31,31 +30,52 @@ export default class Measuring extends Component {
                 console.log(error);
             });
 
-
-        navigator.geolocation.getCurrentPosition((position) => { //watchPosition
-            console.log('geolocation ' + position.coords.latitude + ',' + position.coords.longitude)
-            this.setState({
-                location: {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                }
-            });
-        });
+        navigator.geolocation.getCurrentPosition(this.updatePosition,
+            (error) => console.log(JSON.stringify(error)))
+        navigator.geolocation.watchPosition(this.updatePosition,
+            (error) => console.log(JSON.stringify(error)),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0, distanceFilter: 1 }
+        );
     }
 
-    MeasuredUnits() {
-        if (this.state.operation) {
-            const measurePoint = this.state.operation.measure_points[0];
-            const measuring = measurePoint.measurings[0];
-            const unit = measuring.unit;
-            const location = measurePoint.location;
-            const { distance } = headingDistanceTo(location, this.state.location);
-            console.log('Distance to point: '+ distance);
-            let measureValue = measuring.value / Math.max(1, distance / 50);
-            measureValue = Math.round(measureValue * 1000) / 1000;
-            const measuredUnits = measureValue + ' ' + unit;
-            return <h2>Messung:  {measuredUnits}</h2>;
-        } else return <h2>Messung:</h2>;
+    updatePosition = (position) => {
+        console.log('geolocation ' + position.coords.latitude + ',' + position.coords.longitude);
+        this.setState({
+            location: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            }
+        });
+        this.updateMeasureValues();
+    }
+
+    MeasuredUnits = () => {
+        if (!this.state.operation)
+            return <h2>Messung:</h2>;
+
+        let pointNumber = 0;
+        let measuringNumber = 0;
+        const unit = this.state.operation.measure_points[pointNumber].measurings[measuringNumber].unit;
+        const measuredUnits = this.state.measureValues[measuringNumber] + ' ' + unit;
+        return <h2>Messung:  {measuredUnits}</h2>;
+
+    }
+
+    updateMeasureValues = () => {
+        if (!this.state.operation)
+            return;
+        //TODO this must be done for every single measuring and accumulate the measure_point values. For now only one point on one measure device
+        let pointNumber = 0;
+        let measuringNumber = 0;
+        const measurePoint = this.state.operation.measure_points[pointNumber];
+        const measuring = measurePoint.measurings[measuringNumber];
+        const location = measurePoint.location;
+        const { distance } = headingDistanceTo(location, this.state.location);
+        console.log('Distance to point: ' + distance);
+        let measureValue = measuring.value / Math.max(1, distance / 50);
+        measureValue = Math.round(measureValue * 1000) / 1000;
+        const measureValues = [measureValue];
+        this.setState({ measureValues })
     }
 
     render() {
