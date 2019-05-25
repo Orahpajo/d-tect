@@ -12,21 +12,11 @@ L.Icon.Default.mergeOptions({
 });
 
 export default class MeasureMap extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      location: props.location,
-      zoom: 13
-    }
-  }
 
-  componentDidMount() {
-
-}
   render() {
     const position = [this.props.location.lat, this.props.location.lng]
     return (
-      <Map center={position} zoom={this.state.zoom} style={{ width: '100%', height: '600px' }}>
+      <Map center={position} zoom={this.props.zoom} style={{ width: '100%', height: '600px' }}>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
