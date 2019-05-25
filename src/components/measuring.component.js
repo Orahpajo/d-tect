@@ -12,7 +12,7 @@ export default class Measuring extends Component {
                 lat: 51.960667,
                 lng: 7.628,
             },
-            measureValues: []
+            measureValues: [[]]
         };
     }
 
@@ -56,8 +56,22 @@ export default class Measuring extends Component {
         let pointNumber = 0;
         let measuringNumber = 0;
         const unit = this.state.operation.measure_points[pointNumber].measurings[measuringNumber].unit;
-        const measuredUnits = this.state.measureValues[measuringNumber] + ' ' + unit;
+        const measuredUnits = this.state.measureValues[pointNumber][measuringNumber] + ' ' + unit;
         return <h2>Messung:  {measuredUnits}</h2>;
+
+    }
+
+    Odor = () => {
+        if (!this.state.operation)
+            return <h2></h2>;
+
+        let pointNumber = 0;
+        const odor = this.state.operation.measure_points[pointNumber].odor;
+        if (odor.threshold < this.state.measureValues[pointNumber][odor.measuring_number])
+            return <span>{odor.description}</span>;
+        else
+            return <span/>;
+
 
     }
 
@@ -74,7 +88,7 @@ export default class Measuring extends Component {
         console.log('Distance to point: ' + distance);
         let measureValue = measuring.value / Math.max(1, distance / 50);
         measureValue = Math.round(measureValue * 1000) / 1000;
-        const measureValues = [measureValue];
+        const measureValues = [[measureValue]];
         this.setState({ measureValues })
     }
 
@@ -83,7 +97,7 @@ export default class Measuring extends Component {
             <Container>
                 <MeasureMap location={this.state.location} zoom={17}></MeasureMap>
                 <this.MeasuredUnits></this.MeasuredUnits>
-
+                <this.Odor></this.Odor>
             </Container>
         );
     }
