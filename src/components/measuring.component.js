@@ -18,7 +18,8 @@ export default class Measuring extends Component {
                 measuredValue: 0,
                 unit: 'ppm'
             }]],
-            activeDevice: 'nose'
+            activeDevice: 'nose',
+            activeUnit: 'ppm'
         };
     }
 
@@ -59,47 +60,32 @@ export default class Measuring extends Component {
         if (!this.state.operation)
             return <Spinner animation="border" />;
 
-        let pointNumber = 0;
-        let measuringNumber = 0;
-
         //Here we need to accumulate the measurings for the selected device (measuringNumber) over all measure_points
         var accVal = 0;
         for (const measurePoint of this.state.measureValues) {
-            const deviceMeasuring = measurePoint.find((measuring) => {
-                console.log( 'comparing '+measuring.device+' to '+ this.state.activeDevice);
-               return  measuring.device === this.state.activeDevice});
+            const deviceMeasuring = measurePoint.find((measuring) => measuring.device === this.state.activeDevice);
             if (deviceMeasuring)
                 accVal += deviceMeasuring.measuredValue;
         }
-
-        const measuring = this.state.measureValues[pointNumber][measuringNumber];
-        const measuredUnits = accVal + ' ' + measuring.unit;
-        return <h3>Messung:  {measuredUnits}</h3>;
-
+        return <h3>Messung: {accVal + ' ' + this.state.activeUnit}</h3>;
     }
 
-    Odor = () => {
+    Surroundings = () => {
         if (!this.state.operation)
             return <span />;
 
-        let pointNumber = 0;
-        const odor = this.state.operation.measure_points[pointNumber].odor;
-        if (odor.threshold < this.state.measureValues[pointNumber][odor.measuring_number])
-            return <span>{odor.description}</span>;
-        else
-            return <span />;
-    }
+        const result = [];
+        for (const measurePoint of this.state.operation.measure_points){
+            for (const feature of measurePoint.surroundings){
+                //find the measured value at the current location, that belong the the featured device
+                const refMeasuring = this.state.measureValues.find((measuring) => measuring.device === feature.device)[0];
+                if ( refMeasuring.measuredValue >= feature.threshold){
+                    result.push(<p key = {feature.description}>{ feature.description }</p>)
+                }
+            }
+        }
 
-    Precipitation = () => {
-        if (!this.state.operation)
-            return <span></span>;
-
-        let pointNumber = 0;
-        const precipitation = this.state.operation.measure_points[pointNumber].precipitation;
-        if (precipitation.threshold < this.state.measureValues[pointNumber][precipitation.measuring_number])
-            return <span>{precipitation.description}</span>
-        else
-            return <span />
+        return result;
     }
 
     updateMeasureValues = () => {
@@ -122,7 +108,6 @@ export default class Measuring extends Component {
                 unit: measuring.unit
             }]);
         }
-        console.log(measureValues);
         this.setState({ measureValues })
     }
 
@@ -138,7 +123,7 @@ export default class Measuring extends Component {
     DeviceChooserItem = () => {
         return this.state.measureValues.map((measurePoint) =>
             measurePoint.map((measuring) =>
-                <Dropdown.Item key={measuring.device} onClick={this.onChooseDevice.bind(this, measuring.device)} active={measuring.device === this.state.activeDevice} >
+                <Dropdown.Item key={measuring.device} onClick={this.onChooseDevice.bind(this, measuring)} active={measuring.device === this.state.activeDevice} >
                     {measuring.device}
                 </Dropdown.Item>
             )
@@ -146,9 +131,10 @@ export default class Measuring extends Component {
     }
 
     onChooseDevice = (event) => {
-        console.log('Setting active device to ' + event);
+        console.log('Setting active device to ' + JSON.stringify(event));
         this.setState({
-            activeDevice: event
+            activeDevice: event.device,
+            activeUnit: event.unit
         });
     }
 
@@ -159,9 +145,7 @@ export default class Measuring extends Component {
                 <p />
                 <this.DeviceChooser />
                 <this.MeasuredUnits />
-                <this.Odor />
-                <p />
-                <this.Precipitation />
+                <this.Surroundings />
             </Container>
         );
     }

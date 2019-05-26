@@ -10,16 +10,11 @@ let Operation = new Schema({
             value: Number, // measured value at the center of the measure point. Example: 240 ppm
             unit: String, // unit of the measure. Example: Parts per Million (ppm)
         }],
-        odor: { // odor or smell of the location
-            description: String, 
-            threshold: Number, // threshold for when the user should be able to smell the odor. Example: if 'value' is 50ppm the threshold could be 20ppm 
-            measuring_number: Number // to which of the measurings does the threshold apply?
-        },
-        precipitation: { // things that fall from the sky around the location such as particles or smoke
-            description: String, 
-            threshold: Number, // threshold for when the user should be able to see the precipation. Example: if 'value' is 50ppm the threshold could be 20ppm 
-            measuring_number: Number // to which of the measurings does the threshold apply?
-        }
+        surroundings: [{ // for example the odor of the location or the precipitation
+            description: String, // 'a foul stench lies in the air'
+            threshold: Number, // threshold for when the user should be able to sense. Example: if measurings.value is 50ppm the threshold could be 20ppm 
+            device: Number // musst match one device of the measurings, so that it can be determined to which measure value the threshold is applied.
+        }]
     }]
 });
 
