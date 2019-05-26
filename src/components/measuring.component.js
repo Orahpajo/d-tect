@@ -75,12 +75,12 @@ export default class Measuring extends Component {
             return <span />;
 
         const result = [];
-        for (const measurePoint of this.state.operation.measure_points){
-            for (const feature of measurePoint.surroundings){
+        for (const measurePoint of this.state.operation.measure_points) {
+            for (const feature of measurePoint.surroundings) {
                 //find the measured value at the current location, that belong the the featured device
                 const refMeasuring = this.state.measureValues.find((measuring) => measuring.device === feature.device)[0];
-                if ( refMeasuring.measuredValue >= feature.threshold){
-                    result.push(<p key = {feature.description}>{ feature.description }</p>)
+                if (refMeasuring.measuredValue >= feature.threshold) {
+                    result.push(<p key={feature.description}>{feature.description}</p>)
                 }
             }
         }
@@ -91,22 +91,23 @@ export default class Measuring extends Component {
     updateMeasureValues = () => {
         if (!this.state.operation)
             return;
-        //TODO this must be done for every single measuring
         var measureValues = [];
         for (const measurePoint of this.state.operation.measure_points) {
-            let measuringNumber = 0;
-            const measuring = measurePoint.measurings[measuringNumber];
-            const location = measurePoint.location;
-            const { distance } = headingDistanceTo(location, this.state.location);
-            console.log('Distance to point: ' + distance);
-            let measuredValue = measuring.value / Math.max(1, distance / 50);
-            measuredValue = Math.round(measuredValue * 1000) / 1000;
+            const measurePointValues = [];
+            for (const measuring of measurePoint.measurings) {
+                const location = measurePoint.location;
+                const { distance } = headingDistanceTo(location, this.state.location);
+                console.log('Distance to point: ' + distance);
+                let measuredValue = measuring.value / Math.max(1, distance / 50);
+                measuredValue = Math.round(measuredValue * 1000) / 1000;
 
-            measureValues.push([{
-                device: measuring.device,
-                measuredValue,
-                unit: measuring.unit
-            }]);
+                measurePointValues.push({
+                    device: measuring.device,
+                    measuredValue,
+                    unit: measuring.unit
+                });
+            }
+            measureValues.push(measurePointValues);
         }
         this.setState({ measureValues })
     }
