@@ -63,7 +63,7 @@ export default class Measuring extends Component {
 
     Odor = () => {
         if (!this.state.operation)
-            return <h2></h2>;
+            return <span/>;
 
         let pointNumber = 0;
         const odor = this.state.operation.measure_points[pointNumber].odor;
@@ -71,8 +71,18 @@ export default class Measuring extends Component {
             return <span>{odor.description}</span>;
         else
             return <span/>;
+    }
 
-
+    Precipitation = () => {
+        if (!this.state.operation)
+            return <span></span>;
+        
+        let pointNumber = 0;
+        const precipitation = this.state.operation.measure_points[pointNumber].precipitation;
+        if (precipitation.threshold < this.state.measureValues[pointNumber][precipitation.measuring_number])
+            return <span>{ precipitation.description }</span>
+        else 
+            return <span/>
     }
 
     updateMeasureValues = () => {
@@ -97,7 +107,9 @@ export default class Measuring extends Component {
             <Container>
                 <MeasureMap location={this.state.location} zoom={17}></MeasureMap>
                 <this.MeasuredUnits></this.MeasuredUnits>
-                <this.Odor></this.Odor>
+                <this.Odor/>
+                <p/>
+                <this.Precipitation/>
             </Container>
         );
     }
