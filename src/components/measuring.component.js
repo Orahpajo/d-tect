@@ -26,6 +26,7 @@ export default class Measuring extends Component {
 
     componentDidMount() {
         const url = process.env.REACT_APP_BACKEND_URL;  
+        console.log(`backend is ${url}`);
         axios.get(url + this.props.match.params.operation_number)
             .then(response => {
                 this.setState({
