@@ -25,7 +25,8 @@ export default class Measuring extends Component {
 
 
     componentDidMount() {
-        axios.get('http://localhost:4000/operations/' + this.props.match.params.operation_number)
+        const url = process.env.REACT_APP_BACKEND_URL;  
+        axios.get(url + this.props.match.params.operation_number)
             .then(response => {
                 this.setState({
                     operation: response.data
