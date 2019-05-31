@@ -26,7 +26,7 @@ export default class Measuring extends Component {
 
     componentDidMount() {
         const url = process.env.REACT_APP_BACKEND_URL;  
-        console.log(`backend is ${url}`);
+        console.log(`backend is ${url}${this.props.match.params.operation_number}`);
         axios.get(url + this.props.match.params.operation_number)
             .then(response => {
                 this.setState({
@@ -36,7 +36,7 @@ export default class Measuring extends Component {
                 console.log(this.state.operation);
             })
             .catch(function (error) {
-                console.log(error);
+                console.log(`Error while loading operation: ${JSON.stringify(error)}`);
             });
 
         navigator.geolocation.getCurrentPosition(this.updatePosition,
