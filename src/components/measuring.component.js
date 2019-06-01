@@ -3,6 +3,7 @@ import { Container, Spinner, Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import MeasureMap from './measuremap.component';
 import { headingDistanceTo } from 'geolocation-utils'
+import https from 'https';
 
 export default class Measuring extends Component {
     constructor(props) {
