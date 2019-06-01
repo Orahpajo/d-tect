@@ -4,7 +4,6 @@ import axios from 'axios';
 import MeasureMap from './measuremap.component';
 import { headingDistanceTo } from 'geolocation-utils'
 import https from 'https';
-https.globalAgent.options.rejectUnauthorized = false; //trust self signed
 
 export default class Measuring extends Component {
     constructor(props) {
@@ -27,6 +26,7 @@ export default class Measuring extends Component {
 
 
     componentDidMount() {
+        https.globalAgent.options.rejectUnauthorized = false; //trust self signed
         const url = process.env.REACT_APP_BACKEND_URL;  
         console.log(`backend is ${url}${this.props.match.params.operation_number}`);
         const agent = new https.Agent({  
