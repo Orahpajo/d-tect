@@ -4,6 +4,7 @@ import axios from 'axios';
 import MeasureMap from './measuremap.component';
 import { headingDistanceTo } from 'geolocation-utils'
 import https from 'https';
+https.globalAgent.options.rejectUnauthorized = false; //trust self signed
 
 export default class Measuring extends Component {
     constructor(props) {
