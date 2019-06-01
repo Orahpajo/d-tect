@@ -10,8 +10,8 @@ var http = require('http');
 var https = require('https');
 
 const path = require("path");
-var privateKey = fs.readFileSync(path.resolve(__dirname, './d-tect_selfsigned.key'), 'utf8');
-var certificate = fs.readFileSync(path.resolve(__dirname, './d-tect_selfsigned.crt'), 'utf8');
+var privateKey = fs.readFileSync(path.resolve(__dirname, './privkey.pem'), 'utf8');
+var certificate = fs.readFileSync(path.resolve(__dirname, './fullchain.pem'), 'utf8');
 
 var credentials = { key: privateKey, cert: certificate };
 app.use(cors());
