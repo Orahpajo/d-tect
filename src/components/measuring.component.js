@@ -3,7 +3,6 @@ import { Container, Spinner, Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import MeasureMap from './measuremap.component';
 import { headingDistanceTo } from 'geolocation-utils'
-import https from 'https';
 
 export default class Measuring extends Component {
     constructor(props) {
@@ -26,13 +25,9 @@ export default class Measuring extends Component {
 
 
     componentDidMount() {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
         const url = process.env.REACT_APP_BACKEND_URL;  
         console.log(`backend is ${url}${this.props.match.params.operation_number}`);
-        const agent = new https.Agent({  
-            rejectUnauthorized: false //trust my self signed certificate
-          });
-        axios.get(url + this.props.match.params.operation_number, { httpsAgent: agent })
+        axios.get(url + this.props.match.params.operation_number)
             .then(response => {
                 this.setState({
                     operation: response.data
