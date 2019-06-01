@@ -26,7 +26,7 @@ export default class Measuring extends Component {
 
 
     componentDidMount() {
-        https.globalAgent.options.rejectUnauthorized = false; //trust self signed
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
         const url = process.env.REACT_APP_BACKEND_URL;  
         console.log(`backend is ${url}${this.props.match.params.operation_number}`);
         const agent = new https.Agent({  
