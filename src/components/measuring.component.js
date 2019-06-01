@@ -27,7 +27,10 @@ export default class Measuring extends Component {
     componentDidMount() {
         const url = process.env.REACT_APP_BACKEND_URL;  
         console.log(`backend is ${url}${this.props.match.params.operation_number}`);
-        axios.get(url + this.props.match.params.operation_number)
+        const agent = new https.Agent({  
+            rejectUnauthorized: false //trust my self signed certificate
+          });
+        axios.get(url + this.props.match.params.operation_number, { httpsAgent: agent })
             .then(response => {
                 this.setState({
                     operation: response.data
