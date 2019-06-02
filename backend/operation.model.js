@@ -13,7 +13,7 @@ let Operation = new Schema({
         surroundings: [{ // for example the odor of the location or the precipitation
             description: String, // 'a foul stench lies in the air'
             threshold: Number, // threshold for when the user should be able to sense. Example: if measurings.value is 50ppm the threshold could be 20ppm 
-            device: Number // musst match one device of the measurings, so that it can be determined to which measure value the threshold is applied.
+            device: String // musst match one device of the measurings, so that it can be determined to which measure value the threshold is applied.
         }]
     }]
 });

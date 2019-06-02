@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
 const PORT = 4000;
 const config = require('./config.json');
 var fs = require('fs');
-var http = require('http');
 var https = require('https');
 
 const path = require("path");

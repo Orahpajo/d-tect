@@ -25,7 +25,7 @@ export default class Measuring extends Component {
 
 
     componentDidMount() {
-        const url = process.env.REACT_APP_BACKEND_URL;  
+        const url = process.env.REACT_APP_BACKEND_URL;
         console.log(`backend is ${url}${this.props.match.params.operation_number}`);
         axios.get(url + this.props.match.params.operation_number)
             .then(response => {
@@ -80,9 +80,12 @@ export default class Measuring extends Component {
         for (const measurePoint of this.state.operation.measure_points) {
             for (const feature of measurePoint.surroundings) {
                 //find the measured value at the current location, that belong the the featured device
-                const refMeasuring = this.state.measureValues.find((measuring) => measuring.device === feature.device)[0];
-                if (refMeasuring.measuredValue >= feature.threshold) {
-                    result.push(<p key={feature.description}>{feature.description}</p>)
+                const flattMeasureValues = [].concat.apply([],this.state.measureValues);
+                const refMeasurings = flattMeasureValues.filter((measuring) => measuring.device === feature.device); 
+                for (const refMeasuring of refMeasurings) {
+                    if (refMeasuring.measuredValue >= feature.threshold) {
+                        result.push(<p key={feature.description}>{feature.description}</p>);
+                    }
                 }
             }
         }
