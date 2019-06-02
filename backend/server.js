@@ -49,7 +49,10 @@ operationRoutes.route('/:operation_number').get(function (req, res) {
             console.log(err);
         } else {
             console.log('searching operation ' + operation_number);
-            console.log('found number ' + operation.operation_number)
+            if (operation)
+                console.log('found number ' + operation.operation_number);
+            else
+                console.log(`no result for ${operation_number}`)
             res.json(operation);
         }
     });
