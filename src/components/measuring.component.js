@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Spinner, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Container, Spinner, Dropdown, DropdownButton, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import MeasureMap from './measuremap.component';
 import { headingDistanceTo } from 'geolocation-utils'
+import { Link } from "react-router-dom";
 
 export default class Measuring extends Component {
     constructor(props) {
@@ -14,30 +15,38 @@ export default class Measuring extends Component {
             },
             //Measured Values for each measure_point and device
             measureValues: [[{
-                device: 'nose',
+                device: 'Nase',
                 measuredValue: 0,
                 unit: 'ppm'
             }]],
-            activeDevice: 'nose',
-            activeUnit: 'ppm'
+            activeDevice: 'Nase',
+            activeUnit: 'ppm',
+            operation: props.operation
         };
     }
 
 
     componentDidMount() {
-        const url = process.env.REACT_APP_BACKEND_URL;
-        console.log(`backend is ${url}${this.props.match.params.operation_number}`);
-        axios.get(url + this.props.match.params.operation_number)
-            .then(response => {
-                this.setState({
-                    operation: response.data
+        if (!this.state.operation) { //we can also access this site via url. 
+            const url = process.env.REACT_APP_BACKEND_URL;
+            axios.get(url + this.props.match.params.operation_number)
+                .then(response => {
+                    if (response.data) {
+                        this.setState({
+                            operation: response.data
+                        });
+                        console.log('measuring.component: operation loaded: ');
+                        console.log(this.state.operation);
+                    } else {
+                        this.setState({
+                            noOperation: true
+                        })
+                    }
+                })
+                .catch(function (error) {
+                    console.log(`measuring.component: Error while loading operation: ${JSON.stringify(error)}`);
                 });
-                console.log('operation loaded: ');
-                console.log(this.state.operation);
-            })
-            .catch(function (error) {
-                console.log(`Error while loading operation: ${JSON.stringify(error)}`);
-            });
+        }
 
         navigator.geolocation.getCurrentPosition(this.updatePosition,
             (error) => console.log(JSON.stringify(error)))
@@ -59,6 +68,10 @@ export default class Measuring extends Component {
     }
 
     MeasuredUnits = () => {
+        if (this.state.noOperation)
+            return <Alert variant='warning'>
+                    Bitte kehren Sie zur <Link to='/'> Startseite </Link> zurück um eine gültige Messauftragsnummer einzugeben!
+                    </Alert>
         if (!this.state.operation)
             return <Spinner animation="border" />;
 
@@ -74,14 +87,14 @@ export default class Measuring extends Component {
 
     Surroundings = () => {
         if (!this.state.operation)
-            return <span />;
+            return null;
 
         const result = [];
         for (const measurePoint of this.state.operation.measure_points) {
             for (const feature of measurePoint.surroundings) {
                 //find the measured value at the current location, that belong the the featured device
-                const flattMeasureValues = [].concat.apply([],this.state.measureValues);
-                const refMeasurings = flattMeasureValues.filter((measuring) => measuring.device === feature.device); 
+                const flattMeasureValues = [].concat.apply([], this.state.measureValues);
+                const refMeasurings = flattMeasureValues.filter((measuring) => measuring.device === feature.device);
                 for (const refMeasuring of refMeasurings) {
                     if (refMeasuring.measuredValue >= feature.threshold) {
                         result.push(<p key={feature.description}>{feature.description}</p>);
@@ -118,6 +131,8 @@ export default class Measuring extends Component {
     }
 
     DeviceChooser = () => {
+        if (this.state.noOperation)
+            return null;
         return <div className='DeviceChooser' >
             <h2>{this.state.activeDevice}</h2>
             <DropdownButton id="dropdown-basic-button" title="Gerät wechseln">
