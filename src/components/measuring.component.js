@@ -8,6 +8,15 @@ import { Link } from "react-router-dom";
 export default class Measuring extends Component {
     constructor(props) {
         super(props);
+        var activeDevice, activeUnit
+        if (props.operation) {
+            const firstMeasuring = props.operation.measure_points[0].measurings[0];
+            activeDevice = firstMeasuring.device;
+            activeUnit = firstMeasuring.unit;
+        } else {
+            activeDevice = 'Nase';
+            activeUnit = 'ppm';
+        }
         this.state = {
             location: {
                 lat: 51.960667,
@@ -19,8 +28,8 @@ export default class Measuring extends Component {
                 measuredValue: 0,
                 unit: 'ppm'
             }]],
-            activeDevice: 'Nase',
-            activeUnit: 'ppm',
+            activeDevice,
+            activeUnit,
             operation: props.operation
         };
     }
@@ -32,8 +41,11 @@ export default class Measuring extends Component {
             axios.get(url + this.props.match.params.operation_number)
                 .then(response => {
                     if (response.data) {
+                        const firstMeasuring = response.data.measure_points[0].measurings[0];
                         this.setState({
-                            operation: response.data
+                            operation: response.data,
+                            activeDevice: firstMeasuring.device,
+                            activeUnit: firstMeasuring.unit
                         });
                         console.log('measuring.component: operation loaded: ');
                         console.log(this.state.operation);
@@ -70,7 +82,7 @@ export default class Measuring extends Component {
     MeasuredUnits = () => {
         if (this.state.noOperation)
             return <Alert variant='warning'>
-                    Bitte kehren Sie zur <Link to='/'> Startseite </Link> zurück um eine gültige Messauftragsnummer einzugeben!
+                Bitte kehren Sie zur <Link to='/'> Startseite </Link> zurück um eine gültige Messauftragsnummer einzugeben!
                     </Alert>
         if (!this.state.operation)
             return <Spinner animation="border" />;
