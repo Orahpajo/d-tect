@@ -5,6 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const PORT = 4000;
 const config = require('./config.json');
+const basicAuth = require('./auth/basicAuth')
 var fs = require('fs');
 var https = require('https');
 
@@ -16,7 +17,9 @@ var credentials = { key: privateKey, cert: certificate };
 app.use(cors());
 app.use(bodyParser.json());
 
-let Operation = require('./operation.model');
+app.use(basicAuth);
+
+let Operation = require('./model/operation.model');
 
 const uri = config.mongoUri;
 console.log('connectiong to uri ' + uri)
@@ -73,9 +76,10 @@ operationRoutes.route('/update/:id').post(function (req, res) {
     Operation.findById(req.params.id, function (err, operation) {
         if (!operation)
             res.status(404).send("data is not found");
-        else
+        else {
             operation.operation_number = req.body.operation_number;
-        operation.measure_points = req.body.measure_points;
+            operation.measure_points = req.body.measure_points;
+        }   
         operation.save().then(operation => {
             res.json('Operation updated!');
         })
