@@ -38,7 +38,12 @@ export default class Measuring extends Component {
     componentDidMount() {
         if (!this.state.operation) { //we can also access this site via url. 
             const url = process.env.REACT_APP_BACKEND_URL;
-            axios.get(url + this.props.match.params.operation_number)
+            axios.get(url + this.props.match.params.operation_number,{
+                auth: {
+                  username: 'test',
+                  password: 'test'
+                }
+              })
                 .then(response => {
                     if (response.data) {
                         const firstMeasuring = response.data.measure_points[0].measurings[0];
