@@ -14,7 +14,12 @@ export default class App extends Component {
   }
   async onSubmit(operation_number) {
     const url = process.env.REACT_APP_BACKEND_URL;
-    const response = await axios.get(url + operation_number);
+    const response = await axios.get(url + operation_number,{
+      auth: {
+        username: 'test',
+        password: 'test'
+      }
+    });
     if (response.data) {
       this.setState({
         operation: response.data
