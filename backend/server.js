@@ -10,6 +10,11 @@ var fs = require('fs');
 var https = require('https');
 
 const path = require("path");
+
+/* Generate key and cert for localhost:
+ * > openssl req -x509 -newkey rsa:2048 -keyout keytmp.pem -out fullchain.pem -days 365
+ * > openssl rsa -in keytmp.pem -out privkey.pem
+ */
 var privateKey = fs.readFileSync(path.resolve(__dirname, './privkey.pem'), 'utf8');
 var certificate = fs.readFileSync(path.resolve(__dirname, './fullchain.pem'), 'utf8');
 

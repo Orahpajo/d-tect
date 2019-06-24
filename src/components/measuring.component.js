@@ -128,7 +128,8 @@ export default class Measuring extends Component {
                 const location = measurePoint.location;
                 const { distance } = headingDistanceTo(location, this.state.location);
                 console.log('Distance to point: ' + distance);
-                let measuredValue = measuring.value / Math.max(1, distance / 50);
+                let measuredValue = measuring.value / Math.max(1, distance / 24);
+                console.log(`distance is ${distance}`)
                 measuredValue = Math.round(measuredValue * 1000) / 1000;
 
                 measurePointValues.push({
