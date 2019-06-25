@@ -180,7 +180,7 @@ export default class Measuring extends Component {
     render() {
         return (
             <Container>
-                <MeasureMap location={this.state.location} zoom={17}></MeasureMap>
+                <MeasureMap location={this.state.location}></MeasureMap>
                 <p />
                 <this.DeviceChooser />
                 <this.MeasuredUnits />

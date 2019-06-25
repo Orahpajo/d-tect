@@ -13,10 +13,25 @@ L.Icon.Default.mergeOptions({
 
 export default class MeasureMap extends Component {
 
+  constructor(props){
+    super(props);
+    this.state = {
+      zoom: 17
+    }
+  }
+
+  handleZoomed = e => {
+    console.log(`zoom level changed:`)
+    console.log(e);
+    this.setState({
+      zoom: e.target._zoom
+    })
+  }
+
   render() {
     const position = [this.props.location.lat, this.props.location.lng]
     return (
-      <Map center={position} zoom={this.props.zoom} style={{ width: '100%', height: '300px' }}>
+      <Map center={position} zoom={this.state.zoom} style={{ width: '100%', height: '300px' }} onZoomend={this.handleZoomed} >
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
