@@ -25,6 +25,11 @@ app.use(bodyParser.json());
 app.use(basicAuth);
 
 let Operation = require('./model/operation.model');
+let User = require('./model/user.model');
+
+//encrypting the password
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const uri = config.mongoUri;
 console.log('connectiong to uri ' + uri)
@@ -95,6 +100,22 @@ operationRoutes.route('/update/:id').post(function (req, res) {
 });
 
 app.use('/operations', operationRoutes);
+
+const userRoutes = express.Router();
+
+userRoutes.route('/').post(function (req, res) {
+    let user = new User(req.body); User Darf Rolle nicht selber posten die legen wir irgendwie selber fest. und pw mit bcrypr verschlüsseln
+    user.save()
+        .then(todo => {
+            res.status(200).json({ 'user': 'user added successfully' });
+        })
+        .catch(err => {
+            res.status(400).send('adding new user failed');
+        });
+});
+
+app.use('/user', userRoutes);
+
 var httpsServer = https.createServer(credentials, app);
 
 httpsServer.listen(PORT, function () {
